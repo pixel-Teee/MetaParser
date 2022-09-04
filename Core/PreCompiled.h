@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -11,6 +12,3 @@
 
 #include <clang-c/Index.h>
 #include <clang-c/CXString.h>
-#include <Header/MetaUtils.h>
-
-#include "Mustache/mustache.hpp"

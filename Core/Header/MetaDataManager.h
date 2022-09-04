@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Mustache/mustache.hpp"
 #include "Cursor.h"
 
 class ReflectionParser;

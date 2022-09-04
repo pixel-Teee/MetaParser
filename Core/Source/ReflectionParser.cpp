@@ -50,20 +50,59 @@ void ReflectionParser::BuildClasses(const Cursor& cursor, Namespace& currentName
 	}
 }
 
-ReflectionParser::ReflectionParser()
+ReflectionParser::ReflectionParser(const ReflectionOptions& options)
+	:m_Options(options),
+	m_Index(nullptr),
+	m_TranslationUnit(nullptr),
+	m_ModuleFileHaderTemplate("")
 {
 }
 
 ReflectionParser::~ReflectionParser()
 {
+	if (m_TranslationUnit)
+		clang_disposeTranslationUnit(m_TranslationUnit);
+
+	if (m_Index)
+		clang_disposeIndex(m_Index);
 }
 
 void ReflectionParser::Parse()
 {
+	m_Index = clang_createIndex(true, m_Options.displayDiagnostics);
+
+	std::vector<const char*> arguments;
+
+#if defined(SYSTEM_INCLUDE_DIRECTORY)
+	arguments.emplace_back("-I"SYSTEM_INCLUDE_DIRECTORY);
+#endif
+
+	for (auto& argument : m_Options.Arguments)
+		arguments.emplace_back(argument.c_str());
+
+	m_TranslationUnit = clang_createTranslationUnitFromSourceFile(m_Index,
+		m_Options.InputSourceFile.c_str(),
+		static_cast<int32_t>(arguments.size()),
+		arguments.data(),
+		0,
+		nullptr);
+
+	auto cursor = clang_getTranslationUnitCursor(m_TranslationUnit);
+
+	Namespace tempNamespace;
+
+	BuildClasses(cursor, tempNamespace);
+
+	tempNamespace.clear();
 }
 
 void ReflectionParser::GenerateFiles()
 {
+}
+
+kainjow::mustache::mustache ReflectionParser::LoadTemplate(const std::string& name) const
+{
+	return kainjow::mustache::mustache();
 }
 
 void ReflectionParser::GenerateHeader(std::string& output) const

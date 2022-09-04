@@ -3,7 +3,9 @@
 #include "Header/Class.h"
 #include "Header/Field.h"
 #include "Header/MetaDataConfig.h"
+#include "Header/MetaUtils.h"
 
+//TODO:need to fix our class
 const auto kTypeObject = "ursine::meta::Object";
 const auto kTypeMetaProperty = "ursine::meta::MetaProperty";
 
@@ -25,6 +27,7 @@ static bool isNativeType(const std::string& qualifinedName)
 BaseClass::BaseClass(const Cursor& cursor)
 	:name(cursor.GetType().GetCanonicalType().GetDisplayName())
 {
+	
 }
 
 Class::Class(const Cursor& cursor, const Namespace& currentNamespace)
@@ -33,6 +36,8 @@ Class::Class(const Cursor& cursor, const Namespace& currentNamespace)
 	,m_QualifiedName(cursor.GetType().GetDisplayName())
 {
 	//from the meta data to get the display name
+	//parameter is key
+	//displayName is class name
 	auto displayName = m_MetaData.GetNativeString(nativeProperty::DisplayName);
 
 	if (displayName.empty())
@@ -54,6 +59,7 @@ Class::Class(const Cursor& cursor, const Namespace& currentNamespace)
 
 				m_BaseClasses.emplace_back(baseClass);
 
+				//if find Disable key, then don't record this BaseClass
 				if (isNativeType(baseClass->name))
 					m_Enabled = !m_MetaData.GetFlag(nativeProperty::Disable);
 
@@ -61,7 +67,8 @@ Class::Class(const Cursor& cursor, const Namespace& currentNamespace)
 			}
 			case CXCursor_FieldDecl:
 			{
-				m_fields.emplace_back(new Field(child, currentNamespace, this));
+				//construct the Field
+				m_Fields.emplace_back(new Field(child, currentNamespace, this));
 				break;
 			}
 			default:
@@ -84,7 +91,7 @@ kainjow::mustache::data Class::CompileTemplate(const ReflectionParser* context) 
 	
 	data["qualifiedName"] = m_QualifiedName;
 
-	data["ptrTypeEnabled"] = m_ptrTypeEnabled ? kainjow::mustache::data::type::bool_true : kainjow::mustache::data::type::bool_false;
+	data["ptrTypeEnabled"] = Utils::TemplateBool(m_ptrTypeEnabled);
 
 	m_MetaData.CompileTemplateData(data, context);
 
@@ -104,7 +111,7 @@ kainjow::mustache::data Class::CompileTemplate(const ReflectionParser* context) 
 
 			item["name"] = baseClass->name;
 
-			item["isLast"] = (i == m_BaseClasses.size() - 1) ? kainjow::mustache::data::type::bool_true : kainjow::mustache::data::type::bool_false;
+			item["isLast"] = Utils::TemplateBool(i == m_BaseClasses.size() - 1);
 
 			baseClasses << item;
 
@@ -122,13 +129,7 @@ kainjow::mustache::data Class::CompileTemplate(const ReflectionParser* context) 
 	{
 		kainjow::mustache::data fields{ kainjow::mustache::data::type::list };
 
-		/*
-		for (auto& filed : m_fields)
-		{
-
-		}
-		*/
-		for (auto& field : m_fields)
+		for (auto& field : m_Fields)
 		{
 			if (field->ShouldCompile())
 				fields << field->CompileTemplate(context);

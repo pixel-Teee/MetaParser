@@ -3,6 +3,7 @@
 #include "Header/Class.h"
 #include "Header/Field.h"
 #include "Header/MetaDataConfig.h"
+#include "Header/MetaUtils.h"
 
 Field::Field(const Cursor& cursor, const Namespace& currentNamespace, Class* parent /*= nullptr*/)
 	:LanguageType(cursor, currentNamespace)
@@ -39,12 +40,12 @@ kainjow::mustache::data Field::CompileTemplate(const ReflectionParser* context) 
 	data["displayName"] = m_DisplayName;
 	data["type"] = m_Type;
 
-	data["hasParent"] = m_parent != nullptr ? kainjow::mustache::data::type::bool_true : kainjow::mustache::data::type::bool_false;
+	data["hasParent"] = Utils::TemplateBool(m_parent != nullptr);
 
 	data["parentQualifiedName"] = m_parent->m_QualifiedName;
 
-	data["isGetterAccessible"] = IsGetterAccessible() ? kainjow::mustache::data::type::bool_true : kainjow::mustache::data::type::bool_false;
-	data["hasExplicitGetter"] = m_HasExplicitGetter ? kainjow::mustache::data::type::bool_true : kainjow::mustache::data::type::bool_false;
+	data["isGetterAccessible"] = Utils::TemplateBool(IsGetterAccessible());
+	data["hasExplicitGetter"] = Utils::TemplateBool(m_HasExplicitGetter);
 
 	if (m_HasExplicitGetter)
 	{
@@ -61,6 +62,8 @@ kainjow::mustache::data Field::CompileTemplate(const ReflectionParser* context) 
 
 		data["explicitGetter"] = explicitGetter;
 	}
+
+	//data.set("getterBody", context->LoadTemplate())
 
 	//data["getterBody"] =
 

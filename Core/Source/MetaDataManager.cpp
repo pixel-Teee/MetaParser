@@ -4,7 +4,9 @@
 
 #include "Header/TokenType.h"
 #include "Header/Tokenizer.h"
+
 #include "Header/MetaDataConfig.h"
+#include "Header/MetaUtils.h"
 
 #define TOKENS_WHITESPACE ' ', '\r', '\n', '\t'
 
@@ -143,7 +145,7 @@ void MetaDataManager::CompileTemplateData(kainjow::mustache::data& data, const R
 
 		item["type"] = prop.first;
 		item["arguments"] = prop.second;
-		item["isLast"] = (i == propertyCount) ? kainjow::mustache::data::type::bool_true : kainjow::mustache::data::type::bool_false;
+		item["isLast"] = Utils::TemplateBool(i == propertyCount);
 
 		propertyData << item;
 
@@ -160,7 +162,6 @@ std::vector<MetaDataManager::Property> MetaDataManager::extractProperties(const 
 	//std::vector<std::pair<std::string, std::string>>
 	std::vector<Property> properties;
 
-	//auto& tokenizer = 
 	auto& tokenizer = getConstructorTokenizer();
 
 	auto propertyList = cursor.GetDisplayName();

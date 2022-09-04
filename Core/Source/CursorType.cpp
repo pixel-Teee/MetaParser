@@ -2,6 +2,8 @@
 
 #include "Header/CursorType.h"
 
+#include "Header/MetaUtils.h"
+
 CursorType::CursorType(const CXType& handle)
 	:m_Handle(handle)
 {
@@ -44,7 +46,6 @@ bool CursorType::IsConst() const
 {
 	return clang_isConstQualifiedType(m_Handle) ? true : false;
 }
-
 
 Cursor CursorType::GetDeclaration() const
 {

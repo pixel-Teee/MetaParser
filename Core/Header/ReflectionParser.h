@@ -1,14 +1,16 @@
 #pragma once
 
-#include "ModuleFile.h"
-
 #include "Cursor.h"
 #include "Namespace.h"
+#include "ModuleFile.h"
+#include "ReflectionOptions.h"
+
+#include "Mustache/mustache.hpp"
 
 class ReflectionParser
 {
 public:
-	ReflectionParser();
+	ReflectionParser(const ReflectionOptions& options);
 
 	~ReflectionParser();
 
@@ -23,6 +25,8 @@ public:
 	void GenerateSource(std::string& output) const;
 
 private:
+
+	ReflectionOptions m_Options;
 	
 	CXIndex m_Index;
 
@@ -36,5 +40,6 @@ private:
 
 	std::unordered_map<std::string, ModuleFile> m_ModuleFiles;//generated reflection information
 
+	//currentNamespace will save the class's typedef
 	void BuildClasses(const Cursor& cursor, Namespace& currentNamespace);
 };

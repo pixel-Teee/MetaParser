@@ -1,6 +1,7 @@
 #include "PreCompiled.h"
 
 #include "Header/Cursor.h"
+#include "Header/MetaUtils.h"
 
 Cursor::Cursor(const CXCursor& handle)
 {
