@@ -2,6 +2,8 @@
 
 #include "Cursor.h"
 
+class ReflectionParser;
+
 class MetaDataManager
 {
 public:
@@ -14,6 +16,8 @@ public:
 	bool GetFlag(const std::string& key) const;
 
 	std::string GetNativeString(const std::string& key) const;
+
+	void CompileTemplateData(kainjow::mustache::data& data, const ReflectionParser* context) const;
 private:
 	//key value
 	using Property = std::pair<std::string, std::string>;

@@ -45,9 +45,9 @@ bool CursorType::IsConst() const
 	return clang_isConstQualifiedType(m_Handle) ? true : false;
 }
 
-/*
+
 Cursor CursorType::GetDeclaration() const
 {
 	return clang_getTypeDeclaration(m_Handle);
 }
-*/
+

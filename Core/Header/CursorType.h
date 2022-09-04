@@ -17,9 +17,9 @@ public:
 	CursorType GetCanonicalType() const;
 
 	//get the cursor for the type, then construct the Cursor class
-	/*
+	
 	Cursor GetDeclaration() const;
-	*/
+	
 	CXTypeKind GetKind() const;
 
 	bool IsConst() const;

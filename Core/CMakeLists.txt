@@ -14,8 +14,10 @@ file(GLOB CoreSrc
 "main.cpp"
 "Source/*.cpp"
 "Header/*.h"
+"Header/*.hpp"
 "PreCompiled.h"
 "PreCompiled.cpp"
+"Header/ConstructorTokenSymbols.inl"
 )
 
 find_package(LLVM_Root REQUIRED)
