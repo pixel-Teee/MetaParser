@@ -8,9 +8,9 @@ struct ReflectionOptions
 
 	std::string SourceRoot;//header and source's directory
 
-	std::string InputSourceFile;//?
+	std::string InputSourceFile;//need parsed header and source
 
-	std::string ModuleHeaderFile;//?
+	std::string ModuleHeaderFile;//in terms of the module header file, to generate the module source file
 
 	std::string OutputModuleSource;//module source, will reference meta file to register
 	
