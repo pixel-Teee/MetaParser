@@ -57,7 +57,60 @@ namespace Utils {
 		}
 	}
 
+	void LoadText(const std::string& fileName, std::string& output)
+	{
+		std::ifstream input(fileName);
 
+		if (!input)
+		{
+			std::stringstream error;
+
+			error << "unable to open file \""
+				<< fileName
+				<< "\" for reading." << std::endl;
+			error << strerror(errno);
+
+			throw std::runtime_error(error.str());
+		}
+
+		//move the file pointer to end
+		input.seekg(0, std::ios::end);
+
+		output.reserve(static_cast<std::string::size_type>(input.tellg()));
+
+		output.assign((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>());
+
+		input.close();
+	}
+
+	void WriteText(const std::string& fileName, const std::string& text)
+	{
+		std::ofstream output(fileName);
+
+		if (!output)
+		{
+			std::stringstream error;
+
+			error << "unable to open file \""
+				<< fileName << "\" for writing."
+				<< std::endl;
+
+			error << strerror(errno);
+
+			throw std::runtime_error(error.str());
+		}
+
+		output << text;
+
+		output.close();
+	}
+
+	void FatalError(const std::string& error)
+	{
+		std::cerr << "error: " << error << std::endl;
+
+		exit(EXIT_FAILURE);
+	}
 
 	kainjow::mustache::data::type TemplateBool(bool value)
 	{

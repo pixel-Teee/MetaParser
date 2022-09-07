@@ -15,4 +15,10 @@ namespace Utils {
 	kainjow::mustache::data::type TemplateBool(bool value);
 
 	std::string GetQualifiedName(const CursorType& type);
+
+	void LoadText(const std::string& fileName, std::string& output);
+
+	void WriteText(const std::string& fileName, const std::string& text);
+
+	void FatalError(const std::string& error);
 }
