@@ -1,1 +1,4 @@
-build/
+Source/MetaParser/build
+
+Source/Test/build
+
