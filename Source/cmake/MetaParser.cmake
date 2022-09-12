@@ -50,6 +50,12 @@ function(meta_parser_prebuild)
                 "${DIRECTORY_NAME}/${BASE_NAME}.Generated"
             )
 
+            #message("source root:")
+            #message("${PREBUILD_META_SOURCE_ROOT}")
+            #
+            #message("generated directory name:")
+            #message("${DIRECTORY_NAME}/${BASE_NAME}.Generated")
+
             set(GENERATED_HEADER "${PREBUILD_META_GENERATED_DIR}/${RELATIVE}.h")
             set(GENERATED_SOURCE "${PREBUILD_META_GENERATED_DIR}/${RELATIVE}.cpp")
 
@@ -76,13 +82,14 @@ function(meta_parser_build)
         MODULE_HEADER # module header
         MODULE_SOURCE_FILE # module source 
         GENERATED_DIR # generated directory
+        PCH_NAME # pch name
         PARSER_EXECUTABLE) # parser executable
 
     set(MULTI_VALUE_ARGS
         DEFINES
-        INCLUDES # need parsed includes
+        INCLUDES # -I Parameter
         GENERATED_FILES # generated files
-        HEADER_FILES)
+        HEADER_FILES) # depend source header
 
     cmake_parse_arguments(BUILD_META "" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 
@@ -93,6 +100,14 @@ function(meta_parser_build)
 
     set(INCLUDES "")
 
+    #foreach(item ${DIRECTORIES})
+    #    message(${item})
+    #endforeach()
+
+    #foreach(item ${BUILD_META_INCLUDES})
+    #    message(${item})
+    #endforeach()
+
     # connect current to last string
     foreach(INC ${RAW_INCLUDES})
         set(INCLUDES "${INCLUDES}${INC}\n")
@@ -100,8 +115,14 @@ function(meta_parser_build)
 
     set(INCLUDES_FILE "${BUILD_META_GENERATED_DIR}/Module.${BUILD_META_TARGET}.Includes.txt")
 
+    message("clang -I Parameter")
+    foreach(item ${INCLUDES})
+        message(${item})
+    endforeach()
+    message("clang -I Parameter")
+
     # write the ${INCLUDES} content to ${INCLUDES_FILE}
-    file(WRITE  ${INCLUDES_FILE} ${INCLUDES})
+    file(WRITE ${INCLUDES_FILE} ${INCLUDES})
 
     set(DEFINES ${BUILD_META_DEFINES})
 
@@ -112,6 +133,16 @@ function(meta_parser_build)
         set(DEFINES_SWITCH )
     else()
         set(DEFINES_SWITCH --defines "${DEFINES}")
+    endif()
+
+    # pch
+    # pch source include pch header
+    if(NOT "${BUILD_META_PCH_NAME}" STREQUAL "")
+        set(EMPTY_SOURCE_CONTENTS "#include \"${BUILD_META_PCH_NAME}.h\"")
+        set(PCH_SWITCH \"${BUILD_META_PCH_NAME}.h\")
+    else()
+        set(EMPTY_SOURCE_CONTENTS "")
+        set(PCH_SWITCH )
     endif()
 
     list(REMOVE_ITEM BUILD_META_GENERATED_FILES "${BUILD_META_SOURCE_ROOT}/${BUILD_META_MODULE_HEADER}")
@@ -129,16 +160,25 @@ function(meta_parser_build)
         endif()
     endforeach()
 
+    # message(${CMAKE_SOURCE_DIR}/${PCH_SWITCH})
+
+    message(${CMAKE_SOURCE_DIR}/${BUILD_META_PCH_NAME}.h)
+
     # add the command that generates the header and source files
     add_custom_command(
         OUTPUT ${BUILD_META_GENERATED_FILES} # output these generated files
         DEPENDS ${BUILD_META_HEADER_FILES} # depend the need parsed header files
+        COMMAND ${CMAKE_COMMAND} -E echo "********************"
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/${BUILD_META_PCH_NAME}.h ${BUILD_META_GENERATED_DIR} # copy pch
         COMMAND ${BUILD_META_PARSER_EXECUTABLE} # parser executable
-        --target-name "${BUILD_META_TARGET}"
-        --source_root "${BUILD_META_SOURCE_ROOT}"
-        --in-source "${BUILD_META_SOURCE_ROOT}/${BUILD_META_SOURCE_FILE}" # one header file contains all need parsed header file
-        --module-header "${BUILD_META_SOURCE_ROOT}/${BUILD_META_MODULE_HEADER}" # module header
-        --out-source "${BUILD_META_MODULE_SOURCE_FILE}" # module source file
-        --out-dir "${BUILD_META_GENERATED_DIR}" # generated directory
+        "${BUILD_META_TARGET}" # target name
+        "${BUILD_META_SOURCE_ROOT}" # source root
+        "${BUILD_META_SOURCE_ROOT}/${BUILD_META_SOURCE_FILE}" # one header file contains all need parsed header file
+        "${BUILD_META_SOURCE_ROOT}/${BUILD_META_MODULE_HEADER}" # module header
+        "${BUILD_META_MODULE_SOURCE_FILE}" # module source file
+        "${BUILD_META_GENERATED_DIR}" # generated directory
+        "${INCLUDES_FILE}" # have some -I parameter, include files, etc system include file
+        "${PCH_SWITCH}" # pch 
+        COMMAND ${CMAKE_COMMAND} -E echo "********************"
     )   
 endfunction()

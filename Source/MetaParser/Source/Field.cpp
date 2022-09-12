@@ -22,7 +22,7 @@ Field::Field(const Cursor& cursor, const Namespace& currentNamespace, Class* par
 	m_ExplicitGetter = m_MetaData.GetNativeString(nativeProperty::ExplicitGetter);
 	m_VeryExplicitGetter = m_MetaData.GetNativeString(nativeProperty::VeryExplicitGetter);
 	m_HasExplicitGetter = !m_ExplicitGetter.empty() || !m_VeryExplicitGetter.empty();
-
+	
 	m_ExplicitSetter = m_MetaData.GetNativeString(nativeProperty::ExplicitSetter);
 	m_HasExplicitSetter = !m_ExplicitSetter.empty();
 }

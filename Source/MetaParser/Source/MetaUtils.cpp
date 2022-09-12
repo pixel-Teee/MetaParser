@@ -38,14 +38,22 @@ namespace Utils {
 		parentNamespace.emplace_back(type.GetDisplayName());
 
 		std::string result;
-		
-		if (parentNamespace.size() == 1)
+
+		if (parentNamespace.size() == 0)
 		{
-			return parentNamespace[1];
+			return "";
 		}
-		else
+		else if (parentNamespace.size() == 1)
 		{
-			for (size_t i = 0; i < parentNamespace.size() - 1; ++i)
+			return parentNamespace[0];
+		}
+		else if(parentNamespace.size() >= 2)
+		{
+			int32_t count = static_cast<int32_t>(parentNamespace.size()) - 1;
+
+			//std::cout << "number:";
+			//std::cout << count << std::endl;
+			for (int32_t i = 0; i < count; ++i)
 			{
 				result += parentNamespace[i];
 
@@ -55,6 +63,8 @@ namespace Utils {
 
 			return result;
 		}
+
+		return "";
 	}
 
 	void LoadText(const std::string& fileName, std::string& output)
@@ -78,9 +88,13 @@ namespace Utils {
 
 		output.reserve(static_cast<std::string::size_type>(input.tellg()));
 
+		input.seekg(0, std::ios::beg);
+
 		output.assign((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>());
 
 		input.close();
+
+		//std::cout << output << std::endl;
 	}
 
 	void WriteText(const std::string& fileName, const std::string& text)

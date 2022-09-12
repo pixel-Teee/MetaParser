@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.5)
 
 project(Test)
 
+# executable MetaParser
+add_subdirectory(../MetaParser MetaParser)
+
 #append cmake module path
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake")
 
@@ -19,7 +22,9 @@ set(TEST_REFLECTION_HEADER "Header/Reflection.h")
 set(TEST_MODULE_HEADER "Header/ReflectionModule.h")
 set(TEST_MODULE_TARGET "TestModule")
 
-set(TEST_HEADERS "Range.h")
+set(TEST_HEADERS "Header/Range.h") # important, this prefix
+
+set(INCLUDES "")
 
 #just get the generated file name
 meta_parser_prebuild(
@@ -34,22 +39,28 @@ meta_parser_prebuild(
     OUT_SRC TEST_META_GENERATED_SOURCES # out reference variable
 )
 
-message(${META_MODULE_SOURCE})
-
-foreach(GENERATED_FILE ${META_GENERATED_FILES})
-    message(${GENERATED_FILE})    
-endforeach()
-
-foreach(GENERATED_HEADER ${TEST_META_GENERATED_HEADERS})
-    message(${GENERATED_HEADER})
-endforeach()
-
-foreach(GENERATED_SOURCE ${TEST_META_GENERATED_SOURCES})
-    message(${GENERATED_SOURCE})
-endforeach()
+#message(${META_MODULE_SOURCE})
+#
+#foreach(GENERATED_FILE ${META_GENERATED_FILES})
+#    message(${GENERATED_FILE})    
+#endforeach()
+#
+#foreach(GENERATED_HEADER ${TEST_META_GENERATED_HEADERS})
+#    message(${GENERATED_HEADER})
+#endforeach()
+#
+#foreach(GENERATED_SOURCE ${TEST_META_GENERATED_SOURCES})
+#    message(${GENERATED_SOURCE})
+#endforeach()
 
 #get a reflection module target
 add_library(${TEST_MODULE_TARGET} ${META_GENERATED_FILES})
+
+# message("${TEST_META_GENERATED_DIR}/PreCompiled.h")
+
+target_precompile_headers(${TEST_MODULE_TARGET} PRIVATE "${TEST_META_GENERATED_DIR}/PreCompiled.h")
+
+target_include_directories(${TEST_MODULE_TARGET} PRIVATE "${TEST_META_GENERATED_DIR}")
 
 #------reflection module------
 
@@ -86,5 +97,7 @@ meta_parser_build(
     MODULE_HEADER ${TEST_MODULE_HEADER} # module header
     MODULE_SOURCE_FILE ${META_MODULE_SOURCE} # module source
     HEADER_FILES ${TEST_HEADERS} # depend header files
+    INCLUDES ${INCLUDES} # -I parameter
+    PCH_NAME "PreCompiled"
     PARSER_EXECUTABLE "$<TARGET_FILE:MetaParser>"
 )

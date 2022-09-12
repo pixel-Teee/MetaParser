@@ -2,7 +2,7 @@
 
 struct ReflectionOptions
 {
-	bool displayDiagnostics;//display error message
+	bool displayDiagnostics = true;//display error message
 
 	std::string targetName;//generated reflection module target, will be compiled to library
 
@@ -18,5 +18,7 @@ struct ReflectionOptions
 
 	std::string TemplateDirectory;//template data file directory
 
-	std::vector<std::string> Arguments;
+	std::string PreCompiledHeader;
+
+	std::vector<std::string> Arguments;//-I -D
 };

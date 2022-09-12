@@ -13,7 +13,7 @@
 	{							\
 		auto displayName = cursor.GetDisplayName();\
 		if(!displayName.empty())\
-		{								\
+		{						\
 			ns.emplace_back(displayName);\
 			method(cursor, ns);\
 			ns.pop_back();\
@@ -40,6 +40,7 @@ void ReflectionParser::BuildClasses(const Cursor& cursor, Namespace& currentName
 {
 	for (auto& child : cursor.GetChildren())
 	{
+		//std::cout << "enter clang cursor" << std::endl;
 		auto kind = child.GetKind();
 
 		//actual definition and a class or struct
@@ -49,27 +50,32 @@ void ReflectionParser::BuildClasses(const Cursor& cursor, Namespace& currentName
 
 			//add to m_Modules[SourceFile].classes = klass
 			TRY_ADD_LANGUAGE_TYPE(klass, classes);
+			//std::cout << "enter clang struct or class cursor" << std::endl;
+			//std::cout << "m_ModuleFiles.size()" << m_ModuleFiles.size() << std::endl;
 		}
 		else if (kind == CXCursor_TypedefDecl)
 		{
 			auto displayName = child.GetDisplayName();
 
 			//external declaration, they're always compiled, but only registered
-			
 		}
 
 		//if the cursor is namespace, then recurse invoke BuildClasses, and place the namespace to currentNamespace
 		RECURSE_NAMESPACES(kind, child, BuildClasses, currentNamespace);
 	}
+
+	//std::cout << "ModuleFileSize:";
+	//std::cout << m_ModuleFiles.size() << std::endl;
 }
 
 void ReflectionParser::AddGlobalTemplateData(kainjow::mustache::data& data)
 {
 	data["version"] = "1.0";
 	data["targetName"] = m_Options.targetName;//reflection module target name
-	data["inputSourceFile"] = m_Options.InputSourceFile;//???
+	data["inputSourceFile"] = m_Options.InputSourceFile;
 	data["moduleHeaderFile"] = m_Options.ModuleHeaderFile;//module header file
 	data["outputModuleSourceFile"] = m_Options.OutputModuleSource;//module source file
+	data["precompiledHeader"] = m_Options.PreCompiledHeader;//precompiled header
 }
 
 void ReflectionParser::GenerateModuleFile(const std::filesystem::path& fileHeader, const std::filesystem::path& fileSource, const std::string& SourceHeader, const ModuleFile& file)
@@ -83,6 +89,8 @@ void ReflectionParser::GenerateModuleFile(const std::filesystem::path& fileHeade
 		headerData["moduleFileName"] = file.name;//header file name(needed parsed header file name)
 
 		std::filesystem::create_directory(fileHeader.parent_path());//generated reflection module header file parent directory
+
+		//std::cout << "content:" << m_ModuleFileHaderTemplate.render(headerData) << std::endl;
 
 		Utils::WriteText(
 			fileHeader.string(),
@@ -100,7 +108,6 @@ void ReflectionParser::GenerateModuleFile(const std::filesystem::path& fileHeade
 		SourceData["moduleFileHeader"] = fileHeader.string();//generated reflection header file
 		
 		COMPILE_TYPE_TEMPLATES(SourceData, "class", file.classes);
-
 		
 		std::filesystem::create_directory(fileSource.parent_path());
 
@@ -138,6 +145,18 @@ void ReflectionParser::Parse()
 	for (auto& argument : m_Options.Arguments)
 		arguments.emplace_back(argument.c_str());
 
+	//std::cout << "InputSourceFile:";
+	//std::cout << m_Options.InputSourceFile.c_str() << std::endl;
+
+	for (size_t i = 0; i < arguments.size(); ++i)
+	{
+		std::cout << "argument[" << std::to_string(i) << "]:";
+		std::cout << arguments[i] << std::endl;
+	}
+
+	std::cout << "InputSourceFile:";
+	std::cout << m_Options.InputSourceFile.c_str() << std::endl;
+
 	m_TranslationUnit = clang_createTranslationUnitFromSourceFile(m_Index,
 		m_Options.InputSourceFile.c_str(),
 		static_cast<int32_t>(arguments.size()),
@@ -145,11 +164,25 @@ void ReflectionParser::Parse()
 		0,
 		nullptr);
 
+	if (m_TranslationUnit == nullptr)
+	{
+		std::cout << "translation unit is nullptr!" << std::endl;
+	}
+	else
+	{
+		std::cout << "translation unit is not nullptr!" << std::endl;
+	}
+
 	auto cursor = clang_getTranslationUnitCursor(m_TranslationUnit);
+
+	std::cout << "parser successfully!" << std::endl;
 
 	Namespace tempNamespace;
 
 	BuildClasses(cursor, tempNamespace);
+
+	//std::cout << "module file size:" << std::endl;
+	//std::cout << m_ModuleFiles.size() << std::endl;
 
 	tempNamespace.clear();
 }
@@ -157,10 +190,10 @@ void ReflectionParser::Parse()
 void ReflectionParser::GenerateFiles()
 {
 	//need parsed header and source file root directory
-	std::filesystem::path SourceRootDirectory(m_Options.SourceRoot);
+	std::filesystem::path SourceRootDirectory(m_Options.SourceRoot, std::filesystem::path::generic_format);
 
 	//output generated file directory
-	std::filesystem::path OutputFileDirectory(m_Options.OutputModuleFileDirectory);
+	std::filesystem::path OutputFileDirectory(m_Options.OutputModuleFileDirectory, std::filesystem::path::generic_format);
 
 	//load the template file
 	//m_ModuleFileHaderTemplate = LoadTemplate()
@@ -202,20 +235,47 @@ void ReflectionParser::GenerateFiles()
 
 	std::regex SpecialCharsRegex("[^a-zA-Z0-9]+");
 
+	//std::cout << "module file number:" << m_ModuleFiles.size() << std::endl;
+
+	//m_ModuleFiles must be in the source root
 	for (auto& file : m_ModuleFiles)
 	{
 		std::filesystem::path filePath(file.first);//file.first is complete path
 
+		//std::cout << "filePath";
+		//std::cout << filePath << std::endl;
+		//std::cout << "file path:" << std::endl;
+		//std::cout << filePath << std::endl;
+
+		//std::cout << "Source Root Directory:";
+		//std::cout << SourceRootDirectory << std::endl;
+
 		//path relative to the source root
-		std::string relativeDir = std::filesystem::relative(filePath, SourceRootDirectory).replace_extension("").string();
+		std::string relativeDir = std::filesystem::relative(filePath, SourceRootDirectory).replace_extension("").generic_string();
+
+		//std::cout << "relative directory:";
+		//std::cout << relativeDir << std::endl;
 
 		//filePath must in the SourceRootDirectory
-		if(relativeDir.find_first_of("..") != std::string::npos)
+		if(relativeDir.find_first_of("..") != std::string::npos || relativeDir == "")
 			continue;
 
+		//std::cout << "outputFile:" << OutputFileDirectory.string() << std::endl;
+		//std::cout << "relativeDir:" << relativeDir << std::endl;
 		std::filesystem::path outputFile = OutputFileDirectory / relativeDir;
-		std::filesystem::path outputFileHeader = outputFile.replace_extension("Generated.h");
-		std::filesystem::path outputFileSource = outputFile.replace_extension("Generated.cpp");
+
+		std::string outputFileString = outputFile.string();
+
+		std::replace(outputFileString.begin(), outputFileString.end(), '\\', '/');
+
+		//std::cout << "OutputFile:";
+		//std::cout << outputFile.string() << std::endl;
+
+		std::filesystem::path temp = outputFileString;
+		std::filesystem::path temp2 = outputFileString;
+
+		std::filesystem::path outputFileHeader = temp.replace_extension("Generated.h");
+		std::filesystem::path outputFileSource = temp2.replace_extension("Generated.cpp");
 
 		//module file name
 		//second name is relative path
@@ -233,7 +293,7 @@ void ReflectionParser::GenerateFiles()
 		moduleFileData["header"] = outputFileHeader.string();//generated header file
 
 		moduleFilesData << moduleFileData;
-
+		
 		//if the generated file header/source doesn't exist, we need to regenerate
 		if (!metaCacheFileExists || !std::filesystem::exists(outputFileHeader) || !std::filesystem::exists(outputFileSource))
 		{
@@ -274,6 +334,8 @@ kainjow::mustache::mustache ReflectionParser::LoadTemplate(const std::string& na
 	std::filesystem::path path = std::filesystem::path(m_Options.TemplateDirectory);
 
 	path.append(name);
+
+	//std::cout << path.string() << std::endl;
 
 	try {
 		std::string text;

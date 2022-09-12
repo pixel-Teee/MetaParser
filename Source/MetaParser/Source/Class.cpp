@@ -69,6 +69,7 @@ Class::Class(const Cursor& cursor, const Namespace& currentNamespace)
 			{
 				//construct the Field
 				m_Fields.emplace_back(new Field(child, currentNamespace, this));
+				
 				break;
 			}
 			default:
@@ -76,10 +77,15 @@ Class::Class(const Cursor& cursor, const Namespace& currentNamespace)
 		}
 
 	}
+
+	//std::cout << "Field Size:";
+	//std::cout << m_Fields.size() << std::endl;
 }
 
 bool Class::ShouldCompile() const
 {
+	std::cout << isAccessible() << std::endl;
+	//std::cout << !isNativeType(m_QualifiedName) << std::endl;
 	return isAccessible() && !isNativeType(m_QualifiedName);
 }
 
@@ -143,5 +149,5 @@ kainjow::mustache::data Class::CompileTemplate(const ReflectionParser* context) 
 
 bool Class::isAccessible() const
 {
-	return false;
+	return true;//TODO:in the future, will give the meta data to determine the property
 }
