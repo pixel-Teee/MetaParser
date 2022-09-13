@@ -56,7 +56,7 @@ meta_parser_prebuild(
 #endforeach()
 
 #get a reflection module target
-add_library(${TEST_MODULE_TARGET} ${META_GENERATED_FILES})
+add_library(${TEST_MODULE_TARGET} ${META_GENERATED_FILES} ${META_MODULE_SOURCE} "Header/ReflectionModule.h")
 
 # message("${TEST_META_GENERATED_DIR}/PreCompiled.h")
 
@@ -76,19 +76,17 @@ file(GLOB TestSrc
 
 source_group(TREE ${CMAKE_SOURCE_DIR} FILES ${TestSrc})
 
-add_executable(Test ${TestSrc} ${META_MODULE_SOURCE})
+add_executable(Test ${TestSrc})
 
 # link the reflection module target
 target_link_libraries(Test PUBLIC ${TEST_MODULE_TARGET} PUBLIC RTTR::Core_Lib)
 
 # include the reflecton module includes
-target_include_directories(Test PRIVATE "${TEST_META_GENERATED_HEADERS}" "../rttr/src")
+target_include_directories(Test PRIVATE "${TEST_META_GENERATED_HEADERS}" "../rttr/src" ".")
 
 target_compile_features(Test
 PUBLIC cxx_std_17
 )
-
-target_include_directories(Test PUBLIC ".")
 
 target_precompile_headers(Test PRIVATE "PreCompiled.h")
 
