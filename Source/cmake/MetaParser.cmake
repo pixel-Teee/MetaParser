@@ -29,6 +29,8 @@ function(meta_parser_prebuild)
 
     #exclude the module header from the included headers
     list(REMOVE_ITEM PREBUILD_META_HEADER_FILES "${PREBUILD_META_SOURCE_ROOT}/${PREBUILD_META_MODULE_HEADER}")
+
+    set(${PREBUILD_META_OUT_SRC} ${${PREBUILD_META_OUT_SRC}} "${MODULE_SOURCE}" PARENT_SCOPE)
        
     #iterator over the header files
     foreach(HEADER ${PREBUILD_META_HEADER_FILES})
@@ -70,7 +72,7 @@ function(meta_parser_prebuild)
     source_group(".Generated" FILES ${GENERATED_FILES})
 
     set(${PREBUILD_META_OUT_GENERATED_FILES} "${GENERATED_FILES}" PARENT_SCOPE)
-    set(${PREBUILD_META_OUT_INC} ${${PREBUILD_META_OUT_SRC}} ${GENERATED_HEADERS} PARENT_SCOPE)
+    set(${PREBUILD_META_OUT_INC} ${${PREBUILD_META_OUT_INC}} ${GENERATED_HEADERS} PARENT_SCOPE)
     set(${PREBUILD_META_OUT_SRC} ${${PREBUILD_META_OUT_SRC}} ${GENERATED_SOURCES} PARENT_SCOPE)
 endfunction()
 

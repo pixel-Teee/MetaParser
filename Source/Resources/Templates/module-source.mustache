@@ -6,8 +6,8 @@
 
 void AllocateModule()
 {
-    {{#moduleFile}}
-    AllocateModuleFile{{&moduleFileName}}{{&name}}();
-    {{/moduleFile}}
+{{#moduleFile}}
+    AllocateModuleFile{{targetName}}{{&name}}();
+{{/moduleFile}}
 }
 

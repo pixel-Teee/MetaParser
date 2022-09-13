@@ -31,8 +31,8 @@ set(INCLUDES "")
 #just get the generated file name
 meta_parser_prebuild(
     TARGET ${TEST_MODULE_TARGET} # module target
-    GENERATED_DIR ${TEST_META_GENERATED_DIR}# generated directory
-    SOURCE_ROOT ${TEST_META_SOURCE_ROOT}# source root
+    GENERATED_DIR ${TEST_META_GENERATED_DIR} # generated directory
+    SOURCE_ROOT ${TEST_META_SOURCE_ROOT} # source root
     HEADER_FILES ${TEST_HEADERS} # need parsed header
     MODULE_HEADER ${TEST_MODULE_HEADER} # module header
     OUT_MODULE_SOURCE META_MODULE_SOURCE # meta module source
@@ -76,7 +76,7 @@ file(GLOB TestSrc
 
 source_group(TREE ${CMAKE_SOURCE_DIR} FILES ${TestSrc})
 
-add_executable(Test ${TestSrc})
+add_executable(Test ${TestSrc} ${META_MODULE_SOURCE})
 
 # link the reflection module target
 target_link_libraries(Test PUBLIC ${TEST_MODULE_TARGET} PUBLIC RTTR::Core_Lib)
