@@ -97,6 +97,8 @@ kainjow::mustache::data Class::CompileTemplate(const ReflectionParser* context) 
 	
 	data["qualifiedName"] = m_QualifiedName;
 
+	//std::cout << "QualifiedName:" << m_QualifiedName << std::endl;
+
 	data["ptrTypeEnabled"] = Utils::TemplateBool(m_ptrTypeEnabled);
 
 	m_MetaData.CompileTemplateData(data, context);

@@ -5,7 +5,7 @@ project(Test)
 # executable MetaParser
 add_subdirectory(../MetaParser MetaParser)
 
-# add_subdirectory(../rttr rttr)
+add_subdirectory(../rttr rttr)
 
 #append cmake module path
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake")
@@ -62,7 +62,7 @@ add_library(${TEST_MODULE_TARGET} ${META_GENERATED_FILES})
 
 target_precompile_headers(${TEST_MODULE_TARGET} PRIVATE "${TEST_META_GENERATED_DIR}/PreCompiled.h")
 
-target_include_directories(${TEST_MODULE_TARGET} PRIVATE "${TEST_META_GENERATED_DIR}")
+target_include_directories(${TEST_MODULE_TARGET} PRIVATE "${TEST_META_GENERATED_DIR}" "../rttr/src")
 
 target_link_libraries(${TEST_MODULE_TARGET} PUBLIC RTTR::Core_Lib)
 
@@ -79,10 +79,10 @@ source_group(TREE ${CMAKE_SOURCE_DIR} FILES ${TestSrc})
 add_executable(Test ${TestSrc})
 
 # link the reflection module target
-target_link_libraries(Test PUBLIC ${TEST_MODULE_TARGET})
+target_link_libraries(Test PUBLIC ${TEST_MODULE_TARGET} PUBLIC RTTR::Core_Lib)
 
 # include the reflecton module includes
-# target_include_directories(Test ${TEST_META_GENERATED_HEADERS})
+target_include_directories(Test PRIVATE "${TEST_META_GENERATED_HEADERS}" "../rttr/src")
 
 target_compile_features(Test
 PUBLIC cxx_std_17

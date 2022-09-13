@@ -4,3 +4,10 @@
 #include "{{& header}}"
 {{/moduleFile}}
 
+void AllocateModule()
+{
+    {{#moduleFile}}
+    AllocateModuleFile{{&moduleFileName}}{{&name}}();
+    {{/moduleFile}}
+}
+

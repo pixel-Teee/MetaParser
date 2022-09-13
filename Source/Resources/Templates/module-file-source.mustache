@@ -2,14 +2,18 @@
 
 #include "{{moduleFileHeader}}"
 #include "{{moduleFileSourceHeader}}"//need parsed header file
+#include "rttr/registration.h"
 
-namespace MetaGenerated
+void AllocateModuleFile{{targetName}}{{moduleFileName}}()
 {
-    void AllocateModuleFile{{targetName}}{{moduleFileName}}()
-    {
-        //------register------
-
-
-        //------register------
-    }
+    //------register------
+    using namespace rttr;
+    {{#class}}
+    registration::class_<{{qualifiedName}}>("{{qualifiedName}}")
+    .constructor<>()
+    {{#field}}
+    .property("{{&name}}", &{{&parentQualifiedName}}::{{&name}})
+    {{/field}}
+    {{/class}};
+    //------register------
 }

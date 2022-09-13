@@ -293,7 +293,7 @@ void ReflectionParser::GenerateFiles()
 		moduleFileData["header"] = outputFileHeader.string();//generated header file
 
 		moduleFilesData << moduleFileData;
-		
+
 		//if the generated file header/source doesn't exist, we need to regenerate
 		if (!metaCacheFileExists || !std::filesystem::exists(outputFileHeader) || !std::filesystem::exists(outputFileSource))
 		{

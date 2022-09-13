@@ -164,13 +164,15 @@ function(meta_parser_build)
 
     message(${CMAKE_SOURCE_DIR}/${BUILD_META_PCH_NAME}.h)
 
+    # message(${BUILD_META_HEADER_FILES})
+
     # add the command that generates the header and source files
     add_custom_command(
         OUTPUT ${BUILD_META_GENERATED_FILES} # output these generated files
         DEPENDS ${BUILD_META_HEADER_FILES} # depend the need parsed header files
         COMMAND ${CMAKE_COMMAND} -E echo "********************"
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/${BUILD_META_PCH_NAME}.h ${BUILD_META_GENERATED_DIR} # copy pch
-        COMMAND ${BUILD_META_PARSER_EXECUTABLE} # parser executable
+        COMMAND call ${BUILD_META_PARSER_EXECUTABLE} # parser executable
         "${BUILD_META_TARGET}" # target name
         "${BUILD_META_SOURCE_ROOT}" # source root
         "${BUILD_META_SOURCE_ROOT}/${BUILD_META_SOURCE_FILE}" # one header file contains all need parsed header file
