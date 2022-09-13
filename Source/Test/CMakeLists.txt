@@ -5,6 +5,8 @@ project(Test)
 # executable MetaParser
 add_subdirectory(../MetaParser MetaParser)
 
+# add_subdirectory(../rttr rttr)
+
 #append cmake module path
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake")
 
@@ -62,6 +64,8 @@ target_precompile_headers(${TEST_MODULE_TARGET} PRIVATE "${TEST_META_GENERATED_D
 
 target_include_directories(${TEST_MODULE_TARGET} PRIVATE "${TEST_META_GENERATED_DIR}")
 
+target_link_libraries(${TEST_MODULE_TARGET} PUBLIC RTTR::Core_Lib)
+
 #------reflection module------
 
 file(GLOB TestSrc
@@ -75,7 +79,7 @@ source_group(TREE ${CMAKE_SOURCE_DIR} FILES ${TestSrc})
 add_executable(Test ${TestSrc})
 
 # link the reflection module target
-target_link_libraries(Test ${TEST_MODULE_TARGET})
+target_link_libraries(Test PUBLIC ${TEST_MODULE_TARGET})
 
 # include the reflecton module includes
 # target_include_directories(Test ${TEST_META_GENERATED_HEADERS})
