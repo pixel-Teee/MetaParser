@@ -4,28 +4,25 @@
 
 #include "rttr/variant.h"
 
+#include "Header/Control.h"
+
 int main()
 {
 	AllocateModule();
 
-	Range range;
-	range.m_Min = 4.0f;
-	range.m_Max = 100.0f;
+	Control control;
 
-	rttr::instance test = range;
-	rttr::type classType = rttr::type::get_by_name("Range");
+	control.SomeIntensityField = 1.2f;
+
+	rttr::variant instance = control;
+
+	rttr::variant range = instance.get_type().get_property("SomeIntensityField").get_metadata("Range");
+
+	if (range.can_convert<Range>())
+	{
+		Range value = range.convert<Range>();
+		std::cout << value.m_Min << " " << value.m_Max << std::endl;
+	}
 	
-	rttr::variant value = classType.get_property_value("m_Min", test);
-	if (value.can_convert<int32_t>())
-	{
-		std::cout << value.convert<int32_t>() << std::endl;
-	}
-
-	rttr::variant slider = classType.get_property("m_Min").get_metadata("Slider");
-
-	if (slider.get_value<SliderType>() == SliderType::Horizontal)
-	{
-		std::cout << "Slider Type Horizontal" << std::endl;
-	}
 	return 0;
 }

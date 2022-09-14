@@ -156,6 +156,10 @@ void MetaDataManager::CompileTemplateData(kainjow::mustache::data& data, const R
 		++i;
 	}
 
+	if (i == 0)
+		data.set("metaPropertyHaveBrackets", false);
+	else
+		data.set("metaPropertyHaveBrackets", true);
 	data.set("metaProperty", propertyData);
 	//data["metaProperty"] = propertyData;
 	//data["metaDataInitializerList"];

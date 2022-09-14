@@ -13,15 +13,15 @@ void AllocateModuleFile{{targetName}}{{moduleFileName}}()
     .constructor<>()
     {{#field}}
     .property("{{&name}}", &{{&parentQualifiedName}}::{{&name}})
-    {{#metaProperty}}
+    {{#metaPropertyHaveBrackets}}
     (
-    {{/metaProperty}}
+    {{/metaPropertyHaveBrackets}}
     {{#metaProperty}}
         metadata("{{&type}}", {{&type}}({{&arguments}})){{^isLast}},{{/isLast}}
     {{/metaProperty}}
-    {{#metaProperty}}
+    {{#metaPropertyHaveBrackets}}
     )
-    {{/metaProperty}}
+    {{/metaPropertyHaveBrackets}}
     {{/field}}
     {{/class}};
     //------register------
