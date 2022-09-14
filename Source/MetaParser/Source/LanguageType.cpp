@@ -5,7 +5,7 @@
 
 LanguageType::LanguageType(const Cursor& cursor, const Namespace& currentNamespace)
 	:m_MetaData(cursor),
-	m_Enabled(m_MetaData.GetFlag(nativeProperty::Enable))
+	 m_Enabled(m_MetaData.GetFlag(nativeProperty::Enable))
 	,m_ptrTypeEnabled(m_MetaData.GetFlag(nativeProperty::EnablePtrType))
 	,m_constPtrTypeEnabled(m_MetaData.GetFlag(nativeProperty::EnableConstPtrType))
 	,m_accessModifier(cursor.GetAccessModifier())

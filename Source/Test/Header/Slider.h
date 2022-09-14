@@ -1,4 +1,5 @@
 #pragma once
+
 enum class SliderType
 {
 	Horizontal,
@@ -12,5 +13,5 @@ struct Slider
 	Slider(){}
 
 	Slider(SliderType otherType) : type(otherType){}
-};
+}Meta(Enable);
 

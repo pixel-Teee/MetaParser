@@ -6,6 +6,9 @@
 class Control
 {
 public:
-	Meta(Range(0.0f, 1.0f), Slider(SliderType::Vertical))
+	//Meta(Range(0.0f, 1.0f), Slider(SliderType::Vertical))
+	Meta(Slider(SliderType::Vertical))
 	float SomeIntensityField;
-};
+
+	void Test();
+}Meta(Enable);

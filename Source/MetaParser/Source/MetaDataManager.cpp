@@ -37,7 +37,7 @@ const Tokenizer<ConstructorTokenType>& getConstructorTokenizer();
 
 MetaDataManager::MetaDataManager(const Cursor& cursor)
 {
-	//get class's annotate
+	//get class field function's annotate
 
 	//"Key = Value, Key2, Key = "Yep!""
 	for (auto& child : cursor.GetChildren())
@@ -50,6 +50,8 @@ MetaDataManager::MetaDataManager(const Cursor& cursor)
 			m_Properties[prop.first] = prop.second;
 			//std::cout << "Property Key:" << prop.first << std::endl;
 			//std::cout << "Property Value:" << prop.second << std::endl;
+			std::cout << "Property Key:" << prop.first << std::endl;
+			std::cout << "Property Value:" << prop.second << std::endl;
 		}
 	}
 }

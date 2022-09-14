@@ -14,7 +14,7 @@ struct BaseClass
 class Class : public LanguageType
 {
 	friend class Field;
-
+	friend class Method;
 public:
 
 	Class(const Cursor& cursor, const Namespace& currentNamespace);
@@ -34,7 +34,9 @@ private:
 
 	SharedPtrVector<BaseClass> m_BaseClasses;//the base class of class
 
-	SharedPtrVector<Field> m_Fields;
+	SharedPtrVector<Field> m_Fields;//fields
+
+	SharedPtrVector<Method> m_Methods;
 
 	bool isAccessible() const;
 };

@@ -24,6 +24,7 @@ Field::Field(const Cursor& cursor, const Namespace& currentNamespace, Class* par
 	m_HasExplicitGetter = !m_ExplicitGetter.empty() || !m_VeryExplicitGetter.empty();
 	
 	m_ExplicitSetter = m_MetaData.GetNativeString(nativeProperty::ExplicitSetter);
+	//m_VeryExplicitSetter = m_MetaData.GetNativeString(nativeProperty::VeryExplicitSetter);
 	m_HasExplicitSetter = !m_ExplicitSetter.empty();
 }
 
@@ -66,6 +67,10 @@ kainjow::mustache::data Field::CompileTemplate(const ReflectionParser* context) 
 	//data.set("getterBody", context->LoadTemplate())
 
 	//data["getterBody"] =
+
+	data["isSetterAccessible"] = Utils::TemplateBool(IsSetterAccessible());
+	data["hasExplicitSetter"] = Utils::TemplateBool(m_HasExplicitSetter);
+	data["explicitSetter"] = m_ExplicitSetter;
 
 	m_MetaData.CompileTemplateData(data, context);
 

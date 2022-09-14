@@ -16,12 +16,17 @@ int main()
 
 	rttr::variant instance = control;
 
-	rttr::variant range = instance.get_type().get_property("SomeIntensityField").get_metadata("Range");
+	rttr::variant slider = instance.get_type().get_property("SomeIntensityField").get_metadata("Slider");
 
-	if (range.can_convert<Range>())
+	if (slider.can_convert<Slider>())
 	{
-		Range value = range.convert<Range>();
-		std::cout << value.m_Min << " " << value.m_Max << std::endl;
+		//Range value = range.convert<Range>();
+		Slider value = slider.convert<Slider>();
+		//std::cout << value.type << std::endl;
+		if (value.type == SliderType::Vertical)
+			std::cout << "SliderType Vertical" << std::endl;
+		else
+			std::cout << "SliderType Horizontal" << std::endl;
 	}
 	
 	return 0;

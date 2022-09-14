@@ -2,6 +2,7 @@
 
 #include "Header/Class.h"
 #include "Header/Field.h"
+#include "Header/Method.h"
 #include "Header/MetaDataConfig.h"
 #include "Header/MetaUtils.h"
 
@@ -59,7 +60,7 @@ Class::Class(const Cursor& cursor, const Namespace& currentNamespace)
 
 				m_BaseClasses.emplace_back(baseClass);
 
-				//if find Disable key, then don't record this BaseClass
+				//if don't find disable key, then m_Enabled don't be affected by this meta property
 				if (isNativeType(baseClass->name))
 					m_Enabled = !m_MetaData.GetFlag(nativeProperty::Disable);
 
@@ -72,6 +73,17 @@ Class::Class(const Cursor& cursor, const Namespace& currentNamespace)
 				
 				break;
 			}
+			//method / static method
+			case CXCursor_CXXMethod:
+				if (child.IsStatic())
+				{
+					
+				}
+				else
+				{
+					m_Methods.emplace_back(new Method(child, currentNamespace, this));
+				}
+				break;
 			default:
 				break;
 		}
@@ -84,7 +96,7 @@ Class::Class(const Cursor& cursor, const Namespace& currentNamespace)
 
 bool Class::ShouldCompile() const
 {
-	std::cout << isAccessible() << std::endl;
+	//std::cout << isAccessible() << std::endl;
 	//std::cout << !isNativeType(m_QualifiedName) << std::endl;
 	return isAccessible() && !isNativeType(m_QualifiedName);
 }
@@ -151,5 +163,6 @@ kainjow::mustache::data Class::CompileTemplate(const ReflectionParser* context) 
 
 bool Class::isAccessible() const
 {
-	return true;//TODO:in the future, will give the meta data to determine the property
+	return m_Enabled || m_MetaData.GetFlag(nativeProperty::Register);
+	//return true;//TODO:in the future, will give the meta data to determine the property
 }

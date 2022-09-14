@@ -2,11 +2,12 @@
 
 struct Range
 {
-	int32_t m_Min;
+	float m_Min;
 
-	int32_t m_Max;
+	float m_Max;
 
 	Range(){}
+
 	Range(float min, float max)
 		:m_Min(min), m_Max(max) {}
-};
+}Meta(Disable);
