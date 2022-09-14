@@ -106,7 +106,7 @@ kainjow::mustache::data Class::CompileTemplate(const ReflectionParser* context) 
 	kainjow::mustache::data data{ kainjow::mustache::data::type::object };
 
 	data["displayName"] = m_DisplayName;
-	
+
 	data["qualifiedName"] = m_QualifiedName;
 
 	//std::cout << "QualifiedName:" << m_QualifiedName << std::endl;
@@ -124,7 +124,7 @@ kainjow::mustache::data Class::CompileTemplate(const ReflectionParser* context) 
 		for (auto& baseClass : m_BaseClasses)
 		{
 			//ignore native types, MetaProperty and Object will be ignore
-			if(isNativeType(baseClass->name))
+			if (isNativeType(baseClass->name))
 				continue;;
 
 			kainjow::mustache::data item{ kainjow::mustache::data::type::object };
@@ -156,6 +156,19 @@ kainjow::mustache::data Class::CompileTemplate(const ReflectionParser* context) 
 		}
 
 		data.set("field", fields);
+	}
+
+	//static methods
+	{
+		kainjow::mustache::data methods { kainjow::mustache::data::type::list };
+
+		for (auto& method : m_Methods)
+		{
+			if (method->ShouldCompile())
+				methods << method->CompileTemplate(context);
+		}
+
+		data.set("method", methods);
 	}
 
 	return data;
