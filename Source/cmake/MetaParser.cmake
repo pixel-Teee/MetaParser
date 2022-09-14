@@ -27,10 +27,14 @@ function(meta_parser_prebuild)
     #set the reflection module source variable to parent scope
     set(${PREBUILD_META_OUT_MODULE_SOURCE} ${MODULE_SOURCE} PARENT_SCOPE)
 
+    set(GENERATED_FILES "${MODULE_SOURCE}")
+    set(GENERATED_HEADERS "")
+    set(GENERATED_SOURCES "${MODULE_SOURCE}")
+
     #exclude the module header from the included headers
     list(REMOVE_ITEM PREBUILD_META_HEADER_FILES "${PREBUILD_META_SOURCE_ROOT}/${PREBUILD_META_MODULE_HEADER}")
 
-    set(${PREBUILD_META_OUT_SRC} ${${PREBUILD_META_OUT_SRC}} "${MODULE_SOURCE}" PARENT_SCOPE)
+    set(${PREBUILD_META_OUT_SRC} ${${PREBUILD_META_OUT_SRC}} ${MODULE_SOURCE} PARENT_SCOPE)
        
     #iterator over the header files
     foreach(HEADER ${PREBUILD_META_HEADER_FILES})
