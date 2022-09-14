@@ -72,6 +72,8 @@ int main(int argc, char* argv[])
 			//std::cout << "-I" << include << std::endl;
 		}
 		//------from the includes file to get the -I parameter------
+
+		options.Arguments.emplace_back("-D__REFLECTION_PARSER__");
 	}
 
 	try

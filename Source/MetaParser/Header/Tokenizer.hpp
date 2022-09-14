@@ -4,6 +4,7 @@
 
 template<typename TokenEnumType, typename InputType>
 inline Tokenizer<TokenEnumType, InputType>::Tokenizer()
+	:m_RootState(CreateState())
 {
 }
 

@@ -46,7 +46,11 @@ MetaDataManager::MetaDataManager(const Cursor& cursor)
 			continue;;
 
 		for (auto& prop : extractProperties(child))
+		{
 			m_Properties[prop.first] = prop.second;
+			//std::cout << "Property Key:" << prop.first << std::endl;
+			//std::cout << "Property Value:" << prop.second << std::endl;
+		}
 	}
 }
 
@@ -165,6 +169,10 @@ std::vector<MetaDataManager::Property> MetaDataManager::extractProperties(const 
 	auto& tokenizer = getConstructorTokenizer();
 
 	auto propertyList = cursor.GetDisplayName();
+
+	//std::cout << "property list:";
+	//std::cout << propertyList;
+
 	//to extract the property
 	auto result = tokenizer.Tokenize(propertyList);
 
@@ -263,8 +271,12 @@ const Tokenizer<ConstructorTokenType>& getConstructorTokenizer()
 		static bool initialized = false;
 		static Tokenizer<ConstructorTokenType> tokenizer;
 
+		//std::cout << "Terminal1" << std::endl;
+
 		if (initialized)
 			return tokenizer;
+
+		//std::cout << "Terminal2" << std::endl;
 
 		auto root = tokenizer.GetRootState();
 
@@ -275,19 +287,23 @@ const Tokenizer<ConstructorTokenType>& getConstructorTokenizer()
 
 			//add edge
 			whiteSpace->SetLooping(TOKENS_WHITESPACE);
+
+			root->AddEdge(whiteSpace, TOKENS_WHITESPACE);//this error
 		}
+
+		//std::cout << "Terminal3" << std::endl;
 
 		//identifier
 		{
 			auto firstCharacter = tokenizer.CreateState(ConstructorTokenType::Identifier);
 			auto anyCharacters = tokenizer.CreateState(ConstructorTokenType::Identifier);
 
-			root->AddEdge(firstCharacter, TOKENS_ALPHANUMERIC, '_');
+			root->AddEdge(firstCharacter, TOKENS_ALPHANUMERIC, '_');//this error
 
 			anyCharacters->SetLooping(TOKENS_ALPHANUMERIC, TOKENS_NUMBER, '_');
 
 			firstCharacter->AddEdge(anyCharacters, TOKENS_ALPHANUMERIC, TOKENS_NUMBER, '_');
-		}
+		}		
 
 		//integer literal
 		auto integerLiteral = tokenizer.CreateState(ConstructorTokenType::IntegerLiteral);
@@ -359,6 +375,8 @@ const Tokenizer<ConstructorTokenType>& getConstructorTokenizer()
 
 			tokenizer.LoadSymbols(symbols);
 		}
+
+		//std::cout << "Ternimal" << std::endl;
 
 		return tokenizer;
 	}

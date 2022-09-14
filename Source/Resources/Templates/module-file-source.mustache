@@ -13,6 +13,15 @@ void AllocateModuleFile{{targetName}}{{moduleFileName}}()
     .constructor<>()
     {{#field}}
     .property("{{&name}}", &{{&parentQualifiedName}}::{{&name}})
+    {{#metaProperty}}
+    (
+    {{/metaProperty}}
+    {{#metaProperty}}
+        metadata("{{&type}}", {{&type}}({{&arguments}})){{^isLast}},{{/isLast}}
+    {{/metaProperty}}
+    {{#metaProperty}}
+    )
+    {{/metaProperty}}
     {{/field}}
     {{/class}};
     //------register------

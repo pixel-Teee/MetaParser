@@ -20,5 +20,12 @@ int main()
 	{
 		std::cout << value.convert<int32_t>() << std::endl;
 	}
+
+	rttr::variant slider = classType.get_property("m_Min").get_metadata("Slider");
+
+	if (slider.get_value<SliderType>() == SliderType::Horizontal)
+	{
+		std::cout << "Slider Type Horizontal" << std::endl;
+	}
 	return 0;
 }

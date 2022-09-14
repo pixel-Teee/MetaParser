@@ -6,4 +6,6 @@
 #   define Meta(...)
 #endif
 
+#include "Slider.h"
 #include "Range.h"
+
