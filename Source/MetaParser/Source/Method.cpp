@@ -12,7 +12,7 @@ Method::Method(const Cursor& cursor, const Namespace& currentNamespace, Class* p
 	,m_Parent(parent)
 	,m_Name(cursor.GetSpelling())
 {
-
+	m_IsOverload = false;
 }
 
 bool Method::ShouldCompile() const
@@ -33,7 +33,8 @@ kainjow::mustache::data Method::CompileTemplate(const ReflectionParser* context)
 	data["returnType"] = m_ReturnType;
 
 	std::cout << "IsOverload:";
-	std::cout << m_IsOverload << std::endl;
+	std::cout << m_IsOverload;
+	std::cout << "IsOverload" << std::endl;
 
 	data["isOverloadAndConst"] = Utils::TemplateBool(m_IsOverload && m_IsConst);//overload and const
 
