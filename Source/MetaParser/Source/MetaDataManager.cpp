@@ -43,7 +43,9 @@ MetaDataManager::MetaDataManager(const Cursor& cursor)
 	for (auto& child : cursor.GetChildren())
 	{
 		if(child.GetKind() != CXCursor_AnnotateAttr)
-			continue;;
+			continue;
+
+		m_Properties["HaveAnnotate"] = "";
 
 		for (auto& prop : extractProperties(child))
 		{
@@ -117,6 +119,7 @@ void MetaDataManager::CompileTemplateData(kainjow::mustache::data& data, const R
 	//list of keywords to ignore in the initializer list
 	static const std::vector<std::string> reservedKeywords
 	{
+		nativeProperty::HaveAnnotate,
 		nativeProperty::Enable,
 		nativeProperty::Disable,
 		nativeProperty::Register,
@@ -157,6 +160,11 @@ void MetaDataManager::CompileTemplateData(kainjow::mustache::data& data, const R
 
 		++i;
 	}
+
+	if (m_Properties.find("HaveAnnotate") != m_Properties.end())
+		data.set("HaveAnnotate", true);
+	else
+		data.set("HaveAnnotate", false);
 
 	if (i == 0)
 		data.set("metaPropertyHaveBrackets", false);
@@ -228,7 +236,7 @@ std::vector<MetaDataManager::Property> MetaDataManager::extractProperties(const 
 						ConstructorTokenType::LessThan,
 						ConstructorTokenType::GreaterThan
 					),
-					result.ConsumeRange(firstOpenParenToken + 1, std::max(0, i - 1))//identifier::<Q> and Q 
+					result.ConsumeRange(firstOpenParenToken + 1, std::max(0, i - 1))//identifier::<> and constructor parameter content
 				);
 				++i;
 			}

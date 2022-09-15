@@ -79,7 +79,8 @@ kainjow::mustache::data Field::CompileTemplate(const ReflectionParser* context) 
 
 bool Field::IsAccessible() const
 {
-	return (m_HasExplicitGetter || m_HasExplicitSetter || (m_accessModifier == CX_CXXPublic && !m_MetaData.GetFlag(nativeProperty::Disable)));
+	//return (m_HasExplicitGetter || m_HasExplicitSetter || (m_accessModifier == CX_CXXPublic && !m_MetaData.GetFlag(nativeProperty::Disable)));
+	return m_MetaData.GetFlag("HaveAnnotate") && !m_MetaData.GetFlag(nativeProperty::Disable);
 }
 
 bool Field::IsGetterAccessible() const

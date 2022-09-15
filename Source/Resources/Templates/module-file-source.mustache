@@ -25,6 +25,15 @@ void AllocateModuleFile{{targetName}}{{moduleFileName}}()
     {{/field}}
     {{#method}}
     .method("{{&name}}", {{#isOverloadAndConst}}select_const{{/isOverloadAndConst}}{{#isOverload}}select_overload<{{&returnType}}({{&argumentList}})>{{/isOverload}}{{#hasBracket}}({{/hasBracket}}&{{&parentQualifiedName}}::{{&name}}{{#hasBracket}}){{/hasBracket}})
+    {{#metaPropertyHaveBrackets}}
+    (
+    {{/metaPropertyHaveBrackets}}
+    {{#metaProperty}}
+        metadata("{{&type}}", {{&type}}({{&arguments}})){{^isLast}},{{/isLast}}
+    {{/metaProperty}}
+    {{#metaPropertyHaveBrackets}}
+    )
+    {{/metaPropertyHaveBrackets}}
     {{/method}}
     {{/class}};
     //------register------

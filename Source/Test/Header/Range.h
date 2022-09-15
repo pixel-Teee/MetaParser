@@ -10,4 +10,4 @@ struct Range
 
 	Range(float min, float max)
 		:m_Min(min), m_Max(max) {}
-}Meta(Disable);
+}Meta(Enable);

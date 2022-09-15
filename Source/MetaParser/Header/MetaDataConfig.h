@@ -2,6 +2,7 @@
 
 namespace nativeProperty
 {
+	const auto HaveAnnotate = "HaveAnnotate";
 	const auto Enable = "Enable";
 	const auto Disable = "Disable";
 	const auto WhiteListMethods = "WhiteListMethods";

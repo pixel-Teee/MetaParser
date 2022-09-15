@@ -32,6 +32,19 @@ int main()
 	rttr::method testMethod = instance.get_type().get_method("Test");
 
 	testMethod.invoke(instance, 1, 2);
+
+	rttr::variant testMethodMeta = testMethod.get_metadata("Slider");
+
+	if (testMethodMeta.can_convert<Slider>())
+	{
+		//Range value = range.convert<Range>();
+		Slider value = testMethodMeta.convert<Slider>();
+		//std::cout << value.type << std::endl;
+		if (value.type == SliderType::Vertical)
+			std::cout << "SliderType Vertical" << std::endl;
+		else
+			std::cout << "SliderType Horizontal" << std::endl;
+	}
 	
 	return 0;
 }

@@ -24,7 +24,7 @@ set(TEST_REFLECTION_HEADER "Header/Reflection.h")
 set(TEST_MODULE_HEADER "Header/ReflectionModule.h")
 set(TEST_MODULE_TARGET "TestModule")
 
-set(TEST_HEADERS "Header/Slider.h" "Header/Control.h") # important, this prefix
+set(TEST_HEADERS "Header/Slider.h" "Header/Control.h" "Header/Range.h") # important, this prefix
 
 set(INCLUDES "")
 
