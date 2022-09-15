@@ -3,6 +3,7 @@
 #include "Header/Method.h"
 #include "Header/Class.h"
 #include "Header/MetaDataConfig.h"
+#include "Header/MetaUtils.h"
 
 Method::Method(const Cursor& cursor, const Namespace& currentNamespace, Class* parent /*= nullptr*/)
 	:LanguageType(cursor, currentNamespace)
@@ -29,9 +30,49 @@ kainjow::mustache::data Method::CompileTemplate(const ReflectionParser* context)
 
 	data["qualifiedSignature"] = GetQualifiedSignature();
 
+	data["returnType"] = m_ReturnType;
+
+	std::cout << "IsOverload:";
+	std::cout << m_IsOverload << std::endl;
+
+	data["isOverloadAndConst"] = Utils::TemplateBool(m_IsOverload && m_IsConst);//overload and const
+
+	data["isOverload"] = Utils::TemplateBool(m_IsOverload && !m_IsConst);//just overload
+
+	data["hasBracket"] = Utils::TemplateBool(m_IsOverload || m_IsConst);
+
+	//argument list
+	std::string argumentList;
+
+	if (m_Signature.size() == 1)
+	{
+		argumentList = m_Signature[0];
+	}
+	else if (m_Signature.size() >= 2)
+	{
+		for (uint32_t i = 0; i < m_Signature.size() - 1; ++i)
+		{
+			argumentList = argumentList + m_Signature[i] + ", ";
+		}
+
+		argumentList += m_Signature.back();
+	}
+
+	data["argumentList"] = argumentList;
+
 	m_MetaData.CompileTemplateData(data, context);
 
 	return data;
+}
+
+std::string Method::GetName()
+{
+	return m_Name;
+}
+
+void Method::SetOverload(bool value)
+{
+	m_IsOverload = value;
 }
 
 bool Method::IsAccessible() const

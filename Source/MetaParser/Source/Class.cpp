@@ -90,6 +90,22 @@ Class::Class(const Cursor& cursor, const Namespace& currentNamespace)
 
 	}
 
+	for (size_t i = 0; i < m_Methods.size(); ++i)
+	{
+		for (size_t j = i + 1; j < m_Methods.size(); ++j)
+		{
+			if (m_Methods[i]->GetName() == m_Methods[j]->GetName())
+			{
+				for (size_t k = 0; k < m_Methods.size(); ++k)
+				{
+					if (m_Methods[i]->GetName() == m_Methods[k]->GetName())
+						m_Methods[k]->SetOverload(true);
+				}
+				break;
+			}
+		}
+	}
+
 	//std::cout << "Field Size:";
 	//std::cout << m_Fields.size() << std::endl;
 }

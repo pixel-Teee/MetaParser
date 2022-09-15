@@ -23,7 +23,9 @@ void AllocateModuleFile{{targetName}}{{moduleFileName}}()
     )
     {{/metaPropertyHaveBrackets}}
     {{/field}}
-
+    {{#method}}
+    .method("{{&name}}", {{#isOverloadAndConst}}select_const{{/isOverloadAndConst}}{{#isOverload}}select_overload<{{&returnType}}({{&argumentList}})>{{/isOverload}}{{#hasBracket}}({{/hasBracket}}&{{&parentQualifiedName}}::{{&name}}{{#hasBracket}}){{/hasBracket}})
+    {{/method}}
     {{/class}};
     //------register------
 }

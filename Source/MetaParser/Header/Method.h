@@ -16,8 +16,14 @@ public:
 
 	kainjow::mustache::data CompileTemplate(const ReflectionParser* context) const override;
 
+	std::string GetName();
+
+	void SetOverload(bool value);
+
 private:
 	bool m_IsConst;
+
+	bool m_IsOverload;
 
 	Class* m_Parent;
 

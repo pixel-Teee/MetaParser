@@ -37,6 +37,8 @@ public:
 
 	bool IsDefinition() const;
 
+	//bool IsOverload() const;
+
 	//method is const?
 	bool IsConst() const;
 

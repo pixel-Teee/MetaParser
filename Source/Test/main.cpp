@@ -28,6 +28,10 @@ int main()
 		else
 			std::cout << "SliderType Horizontal" << std::endl;
 	}
+
+	rttr::method testMethod = instance.get_type().get_method("Test");
+
+	testMethod.invoke(instance, 1, 2);
 	
 	return 0;
 }
