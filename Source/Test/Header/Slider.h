@@ -6,12 +6,14 @@ enum class SliderType
 	Vertical
 };
 
-struct Slider
+struct Meta(Enable) Slider
 {
 	SliderType type;
 
 	Slider(){}
 
 	Slider(SliderType otherType) : type(otherType){}
-}Meta(Enable);
+
+	RTTR_REGISTRATION_FRIEND
+};
 

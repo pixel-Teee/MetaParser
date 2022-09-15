@@ -1,6 +1,6 @@
 #pragma once
 
-struct Range
+struct Meta(Enable) Range
 {
 	float m_Min;
 
@@ -10,4 +10,6 @@ struct Range
 
 	Range(float min, float max)
 		:m_Min(min), m_Max(max) {}
-}Meta(Enable);
+
+	RTTR_REGISTRATION_FRIEND
+};

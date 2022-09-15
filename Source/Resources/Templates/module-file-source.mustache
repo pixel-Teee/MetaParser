@@ -4,7 +4,7 @@
 #include "{{moduleFileSourceHeader}}"//need parsed header file
 #include "rttr/registration.h"
 
-void AllocateModuleFile{{targetName}}{{moduleFileName}}()
+static void rttr_auto_register_reflection_function_()
 {
     //------register------
     using namespace rttr;
@@ -37,4 +37,9 @@ void AllocateModuleFile{{targetName}}{{moduleFileName}}()
     {{/method}}
     {{/class}};
     //------register------
+}
+
+void AllocateModuleFile{{targetName}}{{moduleFileName}}()
+{
+    rttr_auto_register_reflection_function_();
 }

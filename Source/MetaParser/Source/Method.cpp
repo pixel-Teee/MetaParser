@@ -77,14 +77,14 @@ void Method::SetOverload(bool value)
 
 bool Method::IsAccessible() const
 {
-	if (m_accessModifier != CX_CXXPublic)
-		return false;
+	//if (m_accessModifier != CX_CXXPublic)
+		//return false;
 	//if the parent wants white listed method, then we must have the enable flag
 	if (m_Parent->GetMetaData().GetFlag(nativeProperty::WhiteListMethods))
 		return m_MetaData.GetFlag(nativeProperty::Enable);
 
 	//must not be explicitly disabled
-	return !m_MetaData.GetFlag(nativeProperty::Disable);
+	return m_MetaData.GetFlag("HaveAnnotate") && !m_MetaData.GetFlag(nativeProperty::Disable);
 }
 
 std::string Method::GetQualifiedSignature() const
