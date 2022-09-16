@@ -4,6 +4,8 @@
 
 #include "Cursor.h"
 
+#include "Namespace.h"
+
 #include "Mustache/mustache.hpp"
 
 namespace Utils {
@@ -21,4 +23,8 @@ namespace Utils {
 	void WriteText(const std::string& fileName, const std::string& text);
 
 	void FatalError(const std::string& error);
+
+	std::string GetQualifiedName(const std::string& displayName, const Namespace& currentNamespace);
+
+	std::string GetQualifiedName(const Cursor& cursor, const Namespace& currentNamespace);
 }

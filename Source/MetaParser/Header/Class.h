@@ -13,6 +13,7 @@ struct BaseClass
 
 class Class : public LanguageType
 {
+	friend class Constructor;
 	friend class Field;
 	friend class Method;
 public:
@@ -33,6 +34,8 @@ private:
 	using SharedPtrVector = std::vector<std::shared_ptr<T>>;
 
 	SharedPtrVector<BaseClass> m_BaseClasses;//the base class of class
+
+	SharedPtrVector<Constructor> m_Constructors;//constructors
 
 	SharedPtrVector<Field> m_Fields;//fields
 

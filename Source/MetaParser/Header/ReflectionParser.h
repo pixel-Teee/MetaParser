@@ -40,6 +40,8 @@ private:
 	//currentNamespace will save the class's typedef
 	void BuildClasses(const Cursor& cursor, Namespace& currentNamespace);
 
+	void BuildEnums(const Cursor& cursor, Namespace& currentNamespace);
+
 	void AddGlobalTemplateData(kainjow::mustache::data& data);
 
 	void GenerateModuleFile(const std::filesystem::path& fileHeader, const std::filesystem::path& fileSource,

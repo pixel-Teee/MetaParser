@@ -10,7 +10,9 @@ static void rttr_auto_register_reflection_function_()
     using namespace rttr;
     {{#class}}
     registration::class_<{{qualifiedName}}>("{{qualifiedName}}")
-    .constructor<>()
+    {{#constructor}}
+    .constructor<{{&argumentList}}>()
+    {{/constructor}}
     {{#field}}
     .property("{{&name}}", &{{&parentQualifiedName}}::{{&name}})
     {{#metaPropertyHaveBrackets}}

@@ -3,6 +3,7 @@
 #include "Header/Class.h"
 #include "Header/Field.h"
 #include "Header/Method.h"
+#include "Header/Constructor.h"
 #include "Header/MetaDataConfig.h"
 #include "Header/MetaUtils.h"
 
@@ -64,6 +65,12 @@ Class::Class(const Cursor& cursor, const Namespace& currentNamespace)
 				if (isNativeType(baseClass->name))
 					m_Enabled = !m_MetaData.GetFlag(nativeProperty::Disable);
 
+				break;
+			}
+			//constructor
+			case CXCursor_Constructor:
+			{
+				m_Constructors.emplace_back(new Constructor(child, currentNamespace, this));
 				break;
 			}
 			case CXCursor_FieldDecl:
@@ -160,6 +167,19 @@ kainjow::mustache::data Class::CompileTemplate(const ReflectionParser* context) 
 	//don't do anything else if only registering
 	if (m_MetaData.GetFlag(nativeProperty::Register))
 		return data;
+
+	//constructors
+	{
+		kainjow::mustache::data constructors{ kainjow::mustache::data::type::list };
+
+		for (auto& ctor : m_Constructors)
+		{
+			if (ctor->ShouldCompile())
+				constructors << ctor->CompileTemplate(context);
+		}
+
+		data.set("constructor", constructors);
+	}
 
 	//fields
 	{

@@ -126,6 +126,31 @@ namespace Utils {
 		exit(EXIT_FAILURE);
 	}
 
+	std::string GetQualifiedName(const std::string& displayName, const Namespace& currentNamespace)
+	{
+		std::string name;
+
+		if (currentNamespace.size() == 1)
+		{
+			name = currentNamespace[0] + "::";
+		}
+		else if (currentNamespace.size() >= 2)
+		{
+			for (size_t i = 0; i < currentNamespace.size() - 1; ++i)
+				name = name + currentNamespace[i] + "::";
+			name += currentNamespace.back();
+		}
+
+		name += displayName;
+
+		return name;
+	}
+
+	std::string GetQualifiedName(const Cursor& cursor, const Namespace& currentNamespace)
+	{
+		return GetQualifiedName(cursor.GetSpelling(), currentNamespace);
+	}
+
 	kainjow::mustache::data::type TemplateBool(bool value)
 	{
 		return value ? kainjow::mustache::data::type::bool_true : kainjow::mustache::data::type::bool_false;

@@ -4,6 +4,8 @@
 
 #include "Header/Class.h"
 
+#include "Header/Enum.h"
+
 #include "Header/Templates.h"
 
 #include "Header/MetaUtils.h"
@@ -66,6 +68,41 @@ void ReflectionParser::BuildClasses(const Cursor& cursor, Namespace& currentName
 
 	//std::cout << "ModuleFileSize:";
 	//std::cout << m_ModuleFiles.size() << std::endl;
+}
+
+void ReflectionParser::BuildEnums(const Cursor& cursor, Namespace& currentNamespace)
+{
+	for (auto& child : cursor.GetChildren())
+	{
+		auto kind = child.GetKind();
+
+		//actual definition and an enum
+		if (child.IsDefinition() && kind == CXCursor_EnumDecl)
+		{
+			//anonymous enum if the underlaying type display name contains this
+			if (child.GetType().GetDisplayName().find("anonymous enum at") != std::string::npos)
+			{
+				//anonymous enums are just loaded as globals with each of their values
+				for (auto& enumChild : child.GetChildren())
+				{
+					if (enumChild.GetKind() == CXCursor_EnumConstantDecl)
+					{
+						//auto global = std::make_shared<Global>(enumCHild, currentNamespace, nullptr);
+						//
+						//TRY_ADD_LANGUAGE_TYPE(global, globals);
+					}
+				}
+			}
+			else
+			{
+				auto enewm = std::make_shared<Enum>(child, currentNamespace);
+
+				TRY_ADD_LANGUAGE_TYPE(enewm, enums);
+			}
+		}
+
+		RECURSE_NAMESPACES(kind, child, BuildEnums, currentNamespace);
+	}
 }
 
 void ReflectionParser::AddGlobalTemplateData(kainjow::mustache::data& data)
