@@ -4,6 +4,11 @@
 
 namespace PixelImGui
 {
+#ifdef IMGUI_SRC_ID
+#define GEN_ID ((IMGUI_SRC_ID) + (__LINE__))
+#else
+#define GEN_ID (__LINE__)
+#endif
 	struct UIState
 	{
 		int32_t mouseX;
@@ -41,5 +46,7 @@ namespace PixelImGui
 	void ImGuiPrepare(UIState& globalState);
 
 	void ImGuiFinish(UIState& globalState);
+
+	int32_t Slider(UIState& globalState, DrawList& drawList, int32_t id, int32_t x, int32_t y, int32_t max, int& value);
 }
 

@@ -93,7 +93,7 @@ namespace PixelImGui
 		if (RegionHit(globalState, x, y, 128, 128))
 		{
 			globalState.hotItem = id;
-			if (globalState.activeItem == 0 && globalState.mouseDown)
+			if (globalState.activeItem == 0 && globalState.mouseDown)//able to transition to active item
 				globalState.activeItem = id;
 		}
 
@@ -143,14 +143,59 @@ namespace PixelImGui
 
 	void ImGuiFinish(UIState& globalState)
 	{
-		if (globalState.mouseDown == 0)
+		if (globalState.mouseDown == 0)//mouse release
 		{
-			globalState.activeItem = 0;
+			globalState.activeItem = 0;//mark it as able to transition to ID
+		}
+		else//mouse down
+		{
+			if (globalState.activeItem == 0)
+				globalState.activeItem = -1;//mark it as unable to transition to ID
+		}
+	}
+
+	int32_t Slider(UIState& globalState, DrawList& drawList, int32_t id, int32_t x, int32_t y, int32_t max, int& value)
+	{
+		//calculate mouse cursor's relative y offset
+		int32_t yPos = ((256 - 16) * value) / max;
+
+		//check for hotness
+		if (RegionHit(globalState, x + 8, y + 8, 16, 255))
+		{
+			globalState.hotItem = id;
+			if (globalState.activeItem == 0 && globalState.mouseDown)
+				globalState.activeItem = id;
+		}
+		
+		static float bgColor[3] = { 0.3f, 0.6f, 0.2f };
+
+		DrawRect(drawList, x, y, 32, 256 + 16, bgColor);
+
+		static float thumbColor[3] = { 0.2f, 0.3f, 0.1f };
+		static float thumbColor2[3] = { 0.4f, 0.6f, 0.2f };
+		if (globalState.activeItem == id || globalState.hotItem == id)
+		{
+			DrawRect(drawList, x + 8, y + 8 + yPos, 16, 16, thumbColor);//thumb changes color if the slider is active or hot
 		}
 		else
 		{
-			if (globalState.activeItem == 0)
-				globalState.activeItem = -1;
+			DrawRect(drawList, x + 8, y + 8 + yPos, 16, 16, thumbColor2);
 		}
+
+		//update widget value
+		if (globalState.activeItem == id)
+		{
+			int32_t mousePos = globalState.mouseY - (y + 8);
+			if (mousePos < 0) mousePos = 0;
+			if (mousePos > 255) mousePos = 255;//clamp
+			int32_t v = (mousePos * max) / 255;
+			if (v != value)
+			{
+				value = v;//change value
+				return 1;
+			}
+		}
+
+		return 0;
 	}
 }

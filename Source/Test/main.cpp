@@ -89,6 +89,8 @@ int main()
 
 	PixelImGui::DrawList globalDrawList;
 
+	int32_t triangleColor = 0;
+
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window);//process input
@@ -97,16 +99,18 @@ int main()
 
 		PixelImGui::ImGuiPrepare(globalUIState);
 
-		PixelImGui::Button(globalUIState, globalDrawList, 2, 50, 50);
+		PixelImGui::Button(globalUIState, globalDrawList, GEN_ID, 50, 50);
 
-		PixelImGui::Button(globalUIState, globalDrawList, 3, 200, 50);
+		PixelImGui::Button(globalUIState, globalDrawList, GEN_ID, 200, 50);
 
-		if (PixelImGui::Button(globalUIState, globalDrawList, 5, 50, 300))
+		if (PixelImGui::Button(globalUIState, globalDrawList, GEN_ID, 50, 300))
 		{
 			clearColor[0] = 0.6f;
 			clearColor[1] = 0.4f;
 			clearColor[2] = 0.8f;
 		}
+
+		PixelImGui::Slider(globalUIState, globalDrawList, GEN_ID, 600, 50, 255, triangleColor);
 
 		PixelImGui::ImGuiFinish(globalUIState);
 
@@ -115,8 +119,10 @@ int main()
 
 		TotalDraw(globalDrawList, uiShader);
 
-		//ourShader.use();
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
+		glBindVertexArray(VAO);
+		ourShader.use();
+		ourShader.setFloat("color", triangleColor / 255.0f);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		glfwSwapBuffers(window);//swap buffers
 		glfwPollEvents();//poll events
