@@ -7,6 +7,8 @@ add_subdirectory(../MetaParser MetaParser)
 
 add_subdirectory(../rttr rttr)
 
+add_subdirectory(../glfw GLFW)
+
 #append cmake module path
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake")
 
