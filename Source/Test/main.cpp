@@ -25,6 +25,8 @@ void mouseButtonCallBack(GLFWwindow* window, int button, int action, int mods);
 
 PixelImGui::UIState globalUIState;
 
+float clearColor[3] = { 0.7f, 0.3f, 0.2f };
+
 int main()
 {
 	//allocate reflection module
@@ -91,9 +93,24 @@ int main()
 	{
 		processInput(window);//process input
 
-		DrawRect(globalDrawList, globalUIState.mouseX, globalUIState.mouseY, 128, 128);
+		//DrawRect(globalDrawList, globalUIState.mouseX, globalUIState.mouseY, 128, 128);
 
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		PixelImGui::ImGuiPrepare(globalUIState);
+
+		PixelImGui::Button(globalUIState, globalDrawList, 2, 50, 50);
+
+		PixelImGui::Button(globalUIState, globalDrawList, 3, 200, 50);
+
+		if (PixelImGui::Button(globalUIState, globalDrawList, 5, 50, 300))
+		{
+			clearColor[0] = 0.6f;
+			clearColor[1] = 0.4f;
+			clearColor[2] = 0.8f;
+		}
+
+		PixelImGui::ImGuiFinish(globalUIState);
+
+		glClearColor(clearColor[0], clearColor[1], clearColor[2], 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		TotalDraw(globalDrawList, uiShader);

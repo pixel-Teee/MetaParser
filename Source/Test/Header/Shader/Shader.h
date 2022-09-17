@@ -91,6 +91,11 @@ public:
 		glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
 	}
 
+	void setFloat3(const std::string& name, float value[3]) const
+	{
+		glUniform3f(glGetUniformLocation(ID, name.c_str()), value[0], value[1], value[2]);
+	}
+
 private:
 	// utility function for checking shader compilation/linking errors.
 	// ------------------------------------------------------------------------
