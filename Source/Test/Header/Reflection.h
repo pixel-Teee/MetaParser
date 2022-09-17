@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include <rttr/type>
 #include <rttr/registration_friend>
 
 #if defined(__REFLECTION_PARSER__)

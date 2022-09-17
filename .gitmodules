@@ -2,3 +2,6 @@
 [submodule "Source/rttr"]
 	path = Source/rttr
 	url = https://github.com/pixel-Teee/rttr.git
+[submodule "Source/glfw"]
+	path = Source/glfw
+	url = https://github.com/pixel-Teee/glfw.git

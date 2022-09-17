@@ -70,7 +70,7 @@ target_link_libraries(${TEST_MODULE_TARGET} PUBLIC RTTR::Core_Lib)
 
 #------reflection module------
 
-file(GLOB TestSrc
+file(GLOB_RECURSE TestSrc
 "main.cpp"
 "Header/*.h"
 "Source/*.cpp"
@@ -81,10 +81,11 @@ source_group(TREE ${CMAKE_SOURCE_DIR} FILES ${TestSrc})
 add_executable(Test ${TestSrc})
 
 # link the reflection module target
-target_link_libraries(Test PUBLIC ${TEST_MODULE_TARGET} PUBLIC RTTR::Core_Lib)
+target_link_libraries(Test PUBLIC ${TEST_MODULE_TARGET} PUBLIC RTTR::Core_Lib PUBLIC glfw PUBLIC opengl32.lib)
 
 # include the reflecton module includes
-target_include_directories(Test PRIVATE "${TEST_META_GENERATED_HEADERS}" "../rttr/src" ".")
+target_include_directories(Test PRIVATE "${TEST_META_GENERATED_HEADERS}" "../rttr/src" "." "../glfw/include"
+"../glad/include")
 
 target_compile_features(Test
 PUBLIC cxx_std_17

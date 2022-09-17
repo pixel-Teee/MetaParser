@@ -6,45 +6,142 @@
 
 #include "Header/Control.h"
 
+#include "Header/UI/PixelImGui.h"
+
+#include "Header/Shader/Shader.h"
+
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
+
+#include <memory>
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+
+void processInput(GLFWwindow* window);
+
+void mouseCallBack(GLFWwindow* window, double xpos, double ypos);
+
+void mouseButtonCallBack(GLFWwindow* window, int button, int action, int mods);
+
+PixelImGui::UIState globalUIState;
+
 int main()
 {
+	//allocate reflection module
 	AllocateModule();
 
-	Control control;
-
-	control.SomeIntensityField = 1.2f;
-
-	rttr::variant instance = control;
-
-	rttr::variant slider = instance.get_type().get_property("SomeIntensityField").get_metadata("Slider");
-
-	if (slider.can_convert<Slider>())
-	{
-		//Range value = range.convert<Range>();
-		Slider value = slider.convert<Slider>();
-		//std::cout << value.type << std::endl;
-		if (value.type == SliderType::Vertical)
-			std::cout << "SliderType Vertical" << std::endl;
-		else
-			std::cout << "SliderType Horizontal" << std::endl;
-	}
-
-	rttr::method testMethod = instance.get_type().get_method("Test");
-
-	testMethod.invoke(instance, 1, 2);
-
-	rttr::variant testMethodMeta = testMethod.get_metadata("Slider");
-
-	if (testMethodMeta.can_convert<Slider>())
-	{
-		//Range value = range.convert<Range>();
-		Slider value = testMethodMeta.convert<Slider>();
-		//std::cout << value.type << std::endl;
-		if (value.type == SliderType::Vertical)
-			std::cout << "SliderType Vertical" << std::endl;
-		else
-			std::cout << "SliderType Horizontal" << std::endl;
-	}
+	glfwInit();
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	
+	GLFWwindow* window = glfwCreateWindow(800, 600, "TestReflection", nullptr, nullptr);
+
+	//register frame buffer size callback
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+	glfwSetCursorPosCallback(window, mouseCallBack);
+
+	glfwSetMouseButtonCallback(window, mouseButtonCallBack);
+
+	if (window == nullptr)
+	{
+		std::cout << "failed to create glfw window" << std::endl;
+		glfwTerminate();
+		return -1;
+	}
+	glfwMakeContextCurrent(window);
+
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	{
+		std::cout << "failed to initialize glad" << std::endl;
+		return -1;
+	}
+
+	//-----create vertices-----
+	float vertices[] = {
+		 0.5f, -0.5f, 0.0f,
+		-0.5f, -0.5f, 0.0f,
+		 0.0f,  0.5f, 0.0f
+	};
+
+	unsigned int VBO, VAO;
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);	
+	//-----create vertices-----
+
+	//------create shader------
+	Shader ourShader("Resource/shader.vs", "Resource/shader.fs");
+	//Shader uiShader("Resource/ui.vs", "Resource/ui.fs");
+
+	std::shared_ptr<Shader> uiShader = std::make_shared<Shader>("Resource/ui.vs", "Resource/ui.fs");
+	//------create shader------
+
+	PixelImGui::DrawList globalDrawList;
+
+	while (!glfwWindowShouldClose(window))
+	{
+		processInput(window);//process input
+
+		DrawRect(globalDrawList, globalUIState.mouseX, globalUIState.mouseY, 128, 128);
+
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		TotalDraw(globalDrawList, uiShader);
+
+		//ourShader.use();
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		glfwSwapBuffers(window);//swap buffers
+		glfwPollEvents();//poll events
+	}
+
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	
+	glfwTerminate();
+
 	return 0;
+}
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+	//globalDrawList.viewportWidth = width;
+	//globalDrawList.viewportHeight = height;
+}
+
+void processInput(GLFWwindow* window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+}
+
+void mouseCallBack(GLFWwindow* window, double xpos, double ypos)
+{
+	//update mouse position
+	globalUIState.mouseX = (int32_t)xpos;
+	globalUIState.mouseY = (int32_t)ypos;
+	//std::cout << xpos << " " << ypos << std::endl;
+}
+
+void mouseButtonCallBack(GLFWwindow* window, int button, int action, int mods)
+{
+	//when left click, update the ui state
+	if (button == GLFW_MOUSE_BUTTON_1)
+	{
+		if (action == GLFW_PRESS)
+			globalUIState.mouseDown = 1;
+		else if (action == GLFW_RELEASE)
+			globalUIState.mouseDown = 0;
+	}
 }
