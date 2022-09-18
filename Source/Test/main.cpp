@@ -9,6 +9,7 @@
 #include "Header/UI/PixelImGui.h"
 
 #include "Header/Shader/Shader.h"
+#include "Header/Item.h"
 
 #include "Header/UI/Font.h"
 
@@ -126,6 +127,10 @@ int main()
 
 	std::string test;
 
+	Item testItem;
+
+	rttr::type itemType = rttr::type::get_by_name("Item");
+
 	while (!glfwWindowShouldClose(window))
 	{
 
@@ -149,6 +154,11 @@ int main()
 		PixelImGui::Slider(globalUIState, globalDrawList, GEN_ID, 600, 50, 255, triangleColor);
 
 		PixelImGui::textField(globalUIState, globalDrawList, Characters, GEN_ID, 600, 400, test);
+		
+		for (auto it = itemType.get_properties().begin(); it != itemType.get_properties().end(); ++it)
+		{
+			PixelImGui::textField(globalUIState, globalDrawList, Characters, GEN_ID, 400, 500, it->get_name().to_string());
+		}
 
 		PixelImGui::ImGuiFinish(globalUIState);
 
