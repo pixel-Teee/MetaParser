@@ -5,3 +5,6 @@
 [submodule "Source/glfw"]
 	path = Source/glfw
 	url = https://github.com/pixel-Teee/glfw.git
+[submodule "Source/freetype"]
+	path = Source/freetype
+	url = https://github.com/freetype/freetype.git

@@ -9,6 +9,8 @@ add_subdirectory(../rttr rttr)
 
 add_subdirectory(../glfw GLFW)
 
+add_subdirectory(../freetype freetype)
+
 #append cmake module path
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake")
 
@@ -64,7 +66,7 @@ add_library(${TEST_MODULE_TARGET} ${META_GENERATED_FILES} ${META_MODULE_SOURCE} 
 
 target_precompile_headers(${TEST_MODULE_TARGET} PRIVATE "${TEST_META_GENERATED_DIR}/PreCompiled.h")
 
-target_include_directories(${TEST_MODULE_TARGET} PRIVATE "${TEST_META_GENERATED_DIR}" "../rttr/src")
+target_include_directories(${TEST_MODULE_TARGET} PRIVATE "${TEST_META_GENERATED_DIR}" "../rttr/src" "../freetype/include")
 
 target_link_libraries(${TEST_MODULE_TARGET} PUBLIC RTTR::Core_Lib)
 
@@ -81,7 +83,7 @@ source_group(TREE ${CMAKE_SOURCE_DIR} FILES ${TestSrc})
 add_executable(Test ${TestSrc})
 
 # link the reflection module target
-target_link_libraries(Test PUBLIC ${TEST_MODULE_TARGET} PUBLIC RTTR::Core_Lib PUBLIC glfw PUBLIC opengl32.lib)
+target_link_libraries(Test PUBLIC ${TEST_MODULE_TARGET} PUBLIC RTTR::Core_Lib PUBLIC glfw PUBLIC opengl32.lib PUBLIC freetype)
 
 # include the reflecton module includes
 target_include_directories(Test PRIVATE "${TEST_META_GENERATED_HEADERS}" "../rttr/src" "." "../glfw/include"
