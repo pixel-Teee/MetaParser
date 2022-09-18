@@ -375,7 +375,7 @@ namespace PixelImGui
 		//render cursor if we have keyboard focus
 		if (globalState.kbItem == id)
 		{
-			
+			RenderText(drawList, maps, "_", x + buffer.size() * 30.0f, y + 48.0f, 1.0f, bgColor);
 		}
 
 		//if we have keyboard focus, we'll need to process the keys
