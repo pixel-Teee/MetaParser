@@ -276,10 +276,10 @@ void GenerateCharacter(std::map<char, Character>& maps, FT_Face& face)
 		// Now store character for later use
 		Character character;
 		character.textureId = texture;
-		character.size[0] = face->glyph->bitmap.width;
-		character.size[1] = face->glyph->bitmap.rows;
-		character.bearing[0] = face->glyph->bitmap_left;
-		character.bearing[1] = face->glyph->bitmap_top;
+		character.size[0] = (float)face->glyph->bitmap.width;
+		character.size[1] = (float)face->glyph->bitmap.rows;
+		character.bearing[0] = (float)face->glyph->bitmap_left;
+		character.bearing[1] = (float)face->glyph->bitmap_top;
 		character.advance = face->glyph->advance.x;
 		maps.insert(std::pair<GLchar, Character>(c, character));
 	}
